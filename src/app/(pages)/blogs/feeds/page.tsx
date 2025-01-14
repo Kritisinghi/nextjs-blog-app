@@ -1,20 +1,26 @@
 import BlogCard from '@/components/card/BlogCard';
-import React from 'react'
-
-interface BlogData {
-  title: string,
-  image: string,
-  description: string
-}
+import { createClerkSupabaseClientSsr } from '@/lib/supabase/server';
+import Link from 'next/link';
+import React, { Suspense } from 'react'
 
 const Feeds: React.FC = async () => {
-  const data: BlogData[] = await fetch('http://localhost:3000/api/blogs').then(res => res.json());
-  console.log(data);
+  const client = await createClerkSupabaseClientSsr();
+  const { data, error } = await client
+    .from('Posts')
+    .select('*')
+    .limit(10);
+
+  if (error) {
+    throw new Error("Oops!! Something went wrong", error);
+  }
+
   return (
     <>
-      {data.map(({ title, image, description }) =>
-        <BlogCard key={title} header={title} description={description} imgUrl={image} />)
-      }
+      <Suspense fallback={<>Loading....</>}>
+        {data.map(({ id, title, image, description, slug }) =>
+          <Link href={`/blogs/${slug}`}> <BlogCard key={title} id={id} header={title} description={description} imgUrl={image} /></Link>)
+        }
+      </Suspense>
     </>
   )
 }
