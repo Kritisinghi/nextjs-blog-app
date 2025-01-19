@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import MainDesktopNavigation from "@/components/navbar/DesktopNavbar";
+import MainDesktopNavigation from "@/components/Navbar/Navbar";
 import { Suspense } from "react";
+import Loading from "@/components/Loading/Loading";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,7 +16,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
     <ClerkProvider>
       <html lang="en">
         <body>
-          <Suspense fallback={<>Loading...</>}>
+          <Suspense fallback={<Loading/>}>
           <MainDesktopNavigation />
           {children}
           </Suspense>

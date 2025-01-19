@@ -1,4 +1,5 @@
-import BlogCard from '@/components/card/BlogCard';
+import BlogCard from '@/components/Card/BlogCard';
+import Loading from '@/components/Loading/Loading';
 import { createClerkSupabaseClientSsr } from '@/lib/supabase/server';
 import Link from 'next/link';
 import React, { Suspense } from 'react'
@@ -16,9 +17,9 @@ const Feeds: React.FC = async () => {
 
   return (
     <>
-      <Suspense fallback={<>Loading....</>}>
+      <Suspense fallback={<Loading />}>
         {data.map(({ id, title, image, description, slug }) =>
-          <Link href={`/blogs/${slug}`}> <BlogCard key={title} id={id} header={title} description={description} imgUrl={image} /></Link>)
+          <Link key={id} href={`/blogs/${slug}`}> <BlogCard key={title} id={id} header={title} description={description} imgUrl={image} /></Link>)
         }
       </Suspense>
     </>

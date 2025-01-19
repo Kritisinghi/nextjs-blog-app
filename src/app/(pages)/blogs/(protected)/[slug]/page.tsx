@@ -1,11 +1,9 @@
 import React from 'react'
 
 type BlogPageProps = {
-    params: {
-        slug: string
-    }
-}
-const BlogPage = async ({ params }: BlogPageProps) => {
+    params: Promise<{ slug: string }>;
+};
+const BlogPage =  async ({ params }: BlogPageProps) => {
     const { slug } = await params;
 
     return (

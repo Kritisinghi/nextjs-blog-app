@@ -1,4 +1,4 @@
-import BlogCard from '@/components/card/BlogCard';
+import BlogCard from '@/components/Card/BlogCard';
 import { createClerkSupabaseClientSsr } from '@/lib/supabase/server';
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';

@@ -1,10 +1,10 @@
-export default function Home() {
+import Home from "@/components/Home/Home";
+
+export default function App() {
   return (
-    <main className="container">
-      <section className="py-24">
-        <div className="container">
-          NextJs Blog App
-        </div>
+    <main>
+      <section>
+        <Home />  
       </section>
     </main>
   );
