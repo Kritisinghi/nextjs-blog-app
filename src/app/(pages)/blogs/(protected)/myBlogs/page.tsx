@@ -1,4 +1,4 @@
-import BlogCard from '@/components/card/BlogCard';
+import BlogCard from '@/components/Card/BlogCard';
 import { createClerkSupabaseClientSsr } from '@/lib/supabase/server';
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
@@ -7,7 +7,6 @@ import React from 'react'
 const MyBlogs = async () => {
    const client = await createClerkSupabaseClientSsr();
    const {userId} = await auth();
-   console.log(userId)
     const { data, error } = await client
       .from('Posts')
       .select('*')

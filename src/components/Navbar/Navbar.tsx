@@ -1,14 +1,15 @@
 'use client'
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Transition } from '@headlessui/react';
 import Link from 'next/link';
-import { useAuth, SignInButton, useClerk } from '@clerk/nextjs';
-
+import { useAuth, SignInButton, useClerk, useSession } from '@clerk/nextjs';
+import Image from 'next/image';
 
 const NavbarWithSideDrawer = () => {
     const { signOut } = useClerk();
     const { isSignedIn } = useAuth();
-
+    const {session} = useSession();
+    const drawerRef = useRef<HTMLDivElement | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState<boolean>(false);
 
@@ -17,9 +18,22 @@ const NavbarWithSideDrawer = () => {
         setIsProfileMenuOpen(false);
     }
 
+    const handleClickOutside = (event: MouseEvent) => {
+        if (drawerRef.current && event.target instanceof HTMLElement && !drawerRef.current.contains(event.target)) {
+            setIsDrawerOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
         <>
-            <div>
+            <div ref={drawerRef}>
                 {/* Side Drawer */}
                 <Transition
                     show={isDrawerOpen}
@@ -34,9 +48,9 @@ const NavbarWithSideDrawer = () => {
                 >
                     <h2 className="text-2xl font-bold text-center">Navigation</h2>
                     <nav>
-                        <Link href="/feeds" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-200">Feeds</Link>
-                        <Link href="/myBlogs" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-200">My Blogs</Link>
-                        <Link href="/editor" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-200">Create</Link>
+                        <Link href="/blogs/feeds" onClick={() => setIsDrawerOpen(false)} className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-200">Feeds</Link>
+                        <Link href="/blogs/myBlogs" onClick={() => setIsDrawerOpen(false)} className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-200">My Blogs</Link>
+                        <Link href="/blogs/editor" onClick={() => setIsDrawerOpen(false)} className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-200">Create</Link>
                     </nav>
                 </Transition>
 
@@ -55,7 +69,7 @@ const NavbarWithSideDrawer = () => {
                         </button>
 
                         {/* Title */}
-                        <h1 className="text-xl font-bold text-gray-700">My Website</h1>
+                        <h1 className="text-xl font-bold text-gray-700">Blogo</h1>
                         {isSignedIn &&
                             <nav className='hidden md:flex space-x-4'>
                                 <Link href="/blogs/feeds" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-200">Feeds</Link>
@@ -70,8 +84,8 @@ const NavbarWithSideDrawer = () => {
                                     onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                                     className="flex items-center space-x-2 focus:outline-none"
                                 >
-                                    <img src="https://via.placeholder.com/40" alt="Avatar" className="w-10 h-10 rounded-full border-2 border-gray-300" />
-                                    <span className="hidden md:inline-block font-medium text-gray-700">Profile</span>
+                                    <Image src={session?.user.imageUrl ?? ''} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-gray-300" width={50} height={50} />
+                                    <span className="hidden md:inline-block font-medium text-gray-700">{session?.user.firstName ?? 'Profile'}</span>
                                 </button>
                                 : <SignInButton />
                             }
@@ -85,11 +99,9 @@ const NavbarWithSideDrawer = () => {
                                 leaveFrom="opacity-100"
                                 leaveTo="opacity-0"
                                 as="div"
-                                className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg"
+                                className="absolute -right-4 w-48 mt-2 bg-white rounded-md shadow-lg"
                             >
-                                {/* <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit Profile</a> */}
-                                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
-                                <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={handleSignOut}>Logout</button>
+                                <button className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={handleSignOut}>Logout</button>
                             </Transition>
                         </div>
                     </header>

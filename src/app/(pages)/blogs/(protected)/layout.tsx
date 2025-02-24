@@ -1,3 +1,4 @@
+import Loading from '@/components/Loading/Loading';
 import { auth } from '@clerk/nextjs/server'
 import { Suspense } from 'react';
 
@@ -10,7 +11,7 @@ const ProtectedLayout: React.FC<ProtectedLayoutProps> = async ({children}) => {
     if (!userId) return redirectToSignIn();
 
     return (
-        <Suspense fallback={<>Loading</>}>
+        <Suspense fallback={<Loading />}>
            {children}
         </Suspense>
     )
