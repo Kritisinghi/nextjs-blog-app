@@ -1,9 +1,12 @@
 interface Blogs {
-    id: string,
-    imgUrl: string;
-    header: string;
+    id: number;
+    created_at: string;
+    title: string;
+    image: string;
     description: string;
     content: string;
+    slug: string;
+    user_id: string;
 }
 
 type BlogFormType = {

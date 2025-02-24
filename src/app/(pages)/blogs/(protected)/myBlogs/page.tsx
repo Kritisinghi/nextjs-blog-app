@@ -7,7 +7,6 @@ import React from 'react'
 const MyBlogs = async () => {
    const client = await createClerkSupabaseClientSsr();
    const {userId} = await auth();
-   console.log(userId)
     const { data, error } = await client
       .from('Posts')
       .select('*')
